@@ -8,3 +8,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # tools/requirements-gen.txt pins the protobuf generator on purpose:
+      # grpcio-tools 1.62.x makes code that loads on protobuf 4.25.1 and newer.
+      # A newer generator would raise the library's protobuf floor.
+      - dependency-name: grpcio-tools
+      - dependency-name: protobuf

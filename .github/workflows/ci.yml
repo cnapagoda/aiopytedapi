@@ -28,7 +28,8 @@ jobs:
       - run: mypy
 
   test:
-    runs-on: ubuntu-latest
+    # Python 3.9 is not available on ubuntu-latest (26.04) any more.
+    runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +46,7 @@ jobs:
 
   # The oldest versions the library says it supports.
   floor:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
