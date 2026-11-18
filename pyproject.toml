@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling>=1.21", "hatch-vcs>=0.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aiopytedapi"
+dynamic = ["version"]
+description = "Async client for the Tesla Powerwall gateway's local TEDAPI"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Chandana Napagoda", email = "cnapagoda@gmail.com" }]
+requires-python = ">=3.9"
+dependencies = [
+    "aiohttp>=3.9",
+    "cryptography>=42",
+    "protobuf>=4.25.1",
+]
+keywords = ["tesla", "powerwall", "tedapi", "asyncio", "home-assistant"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Home Automation",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/cnapagoda/aiopytedapi"
+Issues = "https://github.com/cnapagoda/aiopytedapi/issues"
+Changelog = "https://github.com/cnapagoda/aiopytedapi/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/aiopytedapi/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/aiopytedapi", "tests", "tools", "README.md", "CHANGELOG.md", "LICENSE", "NOTICE"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aiopytedapi"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+extend-exclude = ["src/aiopytedapi/_proto/tedapi_pb2.py", "src/aiopytedapi/_proto/tedapi_pb2.pyi"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "BLE", "SIM", "RUF", "PL", "PT", "ASYNC"]
+ignore = ["PLR0913", "PLR2004", "UP007", "UP006", "UP035", "UP045"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "PLR2004", "PLC0415", "SLF001", "PT018", "PLR0912", "PLR0917"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src/aiopytedapi"]
+exclude = ["src/aiopytedapi/_proto/tedapi_pb2\\.py$"]
+
+[[tool.mypy.overrides]]
+module = ["aiopytedapi._proto.*"]
+ignore_errors = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = ["live: needs a real gateway (never run in CI)"]
+addopts = "-m 'not live'"
+
+[tool.coverage.run]
+source = ["aiopytedapi"]
+branch = true
+omit = ["*/_proto/*", "*/_version.py"]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true
+skip_covered = true
