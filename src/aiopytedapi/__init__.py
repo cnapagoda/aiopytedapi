@@ -21,6 +21,7 @@ from .exceptions import (
     TedapiError,
     UnexpectedResponseError,
 )
+from .inventory import BatteryInventory, BatteryUnit, UnitRole, split_din
 from .keys import RsaKey, fingerprint, public_key_bytes, rsa_public_key_der
 from .models import (
     AuthorizedClient,
@@ -43,6 +44,8 @@ __all__ = [
     "WIFI_HOST",
     "AuthorizedClient",
     "AuthorizedClients",
+    "BatteryInventory",
+    "BatteryUnit",
     "CalibrationDelayStatus",
     "GatewayAuthError",
     "GatewayBusyError",
@@ -63,9 +66,11 @@ __all__ = [
     "TedapiError",
     "Transport",
     "UnexpectedResponseError",
+    "UnitRole",
     "WifiTransport",
     "__version__",
     "fingerprint",
     "public_key_bytes",
     "rsa_public_key_der",
+    "split_din",
 ]

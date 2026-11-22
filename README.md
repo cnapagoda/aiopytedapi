@@ -27,12 +27,14 @@ Registering a key needs Tesla's cloud once (for example `python -m pypowerwall r
 | Battery calibration delay | `get_battery_calibration_delay_status()`, `delay_battery_calibration()` | ✅ | — |
 | Registered keys | `get_authorized_clients()`, `add_authorized_client()`, `remove_authorized_client()` | ✅ list, add, remove | ✅ list |
 | Gateway configuration | `get_config()` | ✅ | ✅ |
+| Battery inventory (Powerwalls, expansion packs) | `get_battery_inventory()`, `BatteryInventory.from_payloads()` | ✅ | ✅ |
 
 What has been seen on hardware so far:
 
 - **Network status:** Powerwall 3 (firmware 26.34.3) on both connections; Powerwall 2 (26.42.0) on Gateway Wi-Fi only. Over the signed connection a Powerwall 2 answers `MessageFaultError` (`MESSAGEFAULT_ERROR_TIMEOUT`).
 - **Registered keys:** listing, adding and removing on a Powerwall 3 (26.34.3).
 - **Site limits:** reading on a Powerwall 3 (26.34.3). Writing has not been tried on hardware.
+- **Battery inventory:** built from config.json plus the component readings you pass in (keyed by each Powerwall's DIN); this library doesn't read components itself yet. Tested against recorded payload shapes only.
 - **Calibration delay:** a Powerwall 3 on 26.34.3 answers `NotSupportedError` (the firmware doesn't implement it). The delay command has not been sent to hardware.
 
 ## Example
@@ -85,7 +87,7 @@ Every command that changes something logs a WARNING. You use these commands at y
 
 ## Privacy
 
-Models keep values that identify a home or a person (Wi-Fi SSID, MAC and IP addresses, key descriptions) out of `repr`, and `to_dict()` only includes them with `details=True`. The gateway's Wi-Fi password is never parsed. `get_config()` returns the gateway's full configuration, which includes identifiers: don't log or publish it.
+Models keep values that identify a home or a person (Wi-Fi SSID, MAC and IP addresses, key descriptions, DINs and serial numbers) out of `repr`, and `to_dict()` only includes them with `details=True`. The gateway's Wi-Fi password is never parsed. `get_config()` returns the gateway's full configuration, which includes identifiers: don't log or publish it.
 
 ## Credits
 
