@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0 (unreleased)
+
+- Battery inventory: `BatteryInventory` lists each Powerwall (leader, follower, or behind a separate gateway) and its expansion packs, with DIN, serial and part number, and each unit's slot in its Powerwall's component readings. Built by `TedapiClient.get_battery_inventory()` or `BatteryInventory.from_payloads()`. Configured packs that don't report have no slot; unlisted packs found in the readings are included; phantom rows (no serial, almost no energy) are skipped.
+
 ## 0.1.0 (2026-11-19)
 
 First release.

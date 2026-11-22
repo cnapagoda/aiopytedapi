@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 import logging
 import re
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple
 
 import aiohttp
 
@@ -29,6 +29,7 @@ from .exceptions import (
     SignedConnectionRequired,
     UnexpectedResponseError,
 )
+from .inventory import BatteryInventory
 from .keys import KeyInput, RsaKey, fingerprint, public_key_bytes, rsa_public_key_der
 from .models import (
     EXPORT_LIMIT_KEY,
@@ -206,6 +207,18 @@ class TedapiClient:
         ):
             raise UnexpectedResponseError(f"{what}: the gateway did not acknowledge the config write")
         return config
+
+    # ── Battery inventory ────────────────────────────────────────────
+
+    async def get_battery_inventory(self, components: Optional[Mapping[str, Any]] = None) -> BatteryInventory:
+        """The site's Powerwalls and expansion packs, from config.json, with
+        each one's slot in ``components``: component readings (ComponentsQuery
+        payloads) keyed by the DIN of the Powerwall they came from. Without
+        readings every unit is listed with ``slot`` None. Read-only; both
+        connections. See :class:`~aiopytedapi.inventory.BatteryInventory`."""
+        config = await self.get_config()
+        din = self._din if self._din is not None else await self.connect()
+        return BatteryInventory.from_payloads(config, gateway_din=din, components=components)
 
     # ── Network status ───────────────────────────────────────────────
 
